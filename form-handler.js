@@ -85,7 +85,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     message: messageTextarea.value.trim()
                 };
                 
-                const response = await fetch('/api/contact', {
+                // Use the full URL of your deployed backend
+                const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                    ? 'http://localhost:3000/api/contact'  // For local development
+                    : 'https://christian-asante.netlify.app/api/contact';  // Your Netlify frontend URL
+
+                const response = await fetch(backendUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
