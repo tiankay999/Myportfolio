@@ -1,0 +1,75 @@
+═══════════════════════════════════════════════════════════════
+   WHERE TO FIND YOUR FORMSPREE FORM ID
+═══════════════════════════════════════════════════════════════
+
+After creating your form on Formspree.io, you'll see:
+
+┌─────────────────────────────────────────────────────────────┐
+│                    Formspree Dashboard                      │
+│                                                             │
+│  Portfolio Contact Form                                     │
+│                                                             │
+│  Your form endpoint is:                                     │
+│                                                             │
+│  ┌────────────────────────────────────────────────────┐    │
+│  │  https://formspree.io/f/mwpevarn                   │    │
+│  └────────────────────────────────────────────────────┘    │
+│                              ^^^^^^^^                       │
+│                           THIS IS YOUR FORM ID!             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+
+EXAMPLE FORM IDS:
+   • mwpevarn
+   • xyzabc123
+   • mjvqnpqr
+   • (yours will be different)
+
+═══════════════════════════════════════════════════════════════
+
+WHERE TO PASTE IT:
+────────────────────────────────────────────────────────────────
+
+1. Open: form-handler.js
+2. Go to line 105
+3. Find this:
+
+   const formspreeUrl = 'https://formspree.io/f/YOUR_FORM_ID';
+                                                  ^^^^^^^^^^^
+                                              REPLACE THIS!
+
+4. Change it to (example):
+
+   const formspreeUrl = 'https://formspree.io/f/mwpevarn';
+
+5. Save the file
+
+═══════════════════════════════════════════════════════════════
+
+COMPLETE EXAMPLE:
+────────────────────────────────────────────────────────────────
+
+BEFORE:
+   const formspreeUrl = 'https://formspree.io/f/YOUR_FORM_ID';
+
+AFTER:
+   const formspreeUrl = 'https://formspree.io/f/mwpevarn';
+                                                  ^^^^^^^^
+                                              Your actual ID
+
+═══════════════════════════════════════════════════════════════
+
+⚠️ IMPORTANT:
+   • Keep the quotes: 'https://formspree.io/f/...'
+   • Replace ONLY: YOUR_FORM_ID
+   • Don't remove the semicolon at the end
+   • Make sure there are no typos
+
+═══════════════════════════════════════════════════════════════
+
+THEN DEPLOY:
+   git add .
+   git commit -m "Add Formspree integration"
+   git push
+
+═══════════════════════════════════════════════════════════════

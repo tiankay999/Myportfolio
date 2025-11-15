@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
         submitButton.appendChild(submitText);
         submitButton.appendChild(spinner);
         
-        // Form submission handler
+        // Form submission handler with Formspree
         contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -72,56 +72,64 @@ document.addEventListener('DOMContentLoaded', function() {
             formMessage.textContent = '';
             formMessage.className = 'form-message';
             
+            // Validate form
+            let hasErrors = false;
+            
+            if (!nameInput.value.trim()) {
+                nameError.textContent = 'Name is required';
+                hasErrors = true;
+            }
+            
+            if (!emailInput.value.trim()) {
+                emailError.textContent = 'Email is required';
+                hasErrors = true;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim())) {
+                emailError.textContent = 'Please enter a valid email';
+                hasErrors = true;
+            }
+            
+            if (!messageTextarea.value.trim()) {
+                messageError.textContent = 'Message is required';
+                hasErrors = true;
+            }
+            
+            if (hasErrors) return;
+            
             // Show loading state
             submitText.textContent = 'Sending...';
             spinner.style.display = 'block';
             submitButton.disabled = true;
             
             try {
-                const formData = {
-                    name: nameInput.value.trim(),
-                    email: emailInput.value.trim(),
-                    phone: phoneInput.value.trim(),
-                    message: messageTextarea.value.trim()
-                };
+                // Formspree endpoint - Replace YOUR_FORM_ID with your actual Formspree form ID
+                const formspreeUrl = 'https://formspree.io/f/mzzjgyep';
                 
-                // Use the full URL of your deployed backend
-                const backendUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-                    ? 'http://localhost:3000/api/contact'  // For local development
-                    : 'https://christian-asante.netlify.app/api/contact';  // Your Netlify frontend URL
+                const formData = new FormData();
+                formData.append('name', nameInput.value.trim());
+                formData.append('email', emailInput.value.trim());
+                formData.append('phone', phoneInput.value.trim());
+                formData.append('message', messageTextarea.value.trim());
 
-                const response = await fetch(backendUrl, {
+                const response = await fetch(formspreeUrl, {
                     method: 'POST',
+                    body: formData,
                     headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(formData)
+                        'Accept': 'application/json'
+                    }
                 });
                 
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    // Handle validation errors
-                    if (data.errors) {
-                        data.errors.forEach(error => {
-                            const errorField = document.getElementById(`${error.param}-error`);
-                            if (errorField) {
-                                errorField.textContent = error.msg;
-                            }
-                        });
-                        throw new Error('Validation failed');
-                    }
-                    throw new Error(data.error || 'Failed to send message');
+                if (response.ok) {
+                    // Show success message
+                    formMessage.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+                    formMessage.className = 'form-message success';
+                    contactForm.reset();
+                } else {
+                    throw new Error('Failed to send message');
                 }
-                
-                // Show success message
-                formMessage.textContent = 'Message sent successfully!';
-                formMessage.className = 'form-message success';
-                contactForm.reset();
                 
             } catch (error) {
                 console.error('Error:', error);
-                formMessage.textContent = error.message || 'Failed to send message. Please try again.';
+                formMessage.textContent = 'Failed to send message. Please try again.';
                 formMessage.className = 'form-message error';
             } finally {
                 // Reset button state
